@@ -1,0 +1,65 @@
+
+<!doctype html>
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8">
+  <title>Websocket Gyroscope</title>
+    <script src="http://192.168.1.249:3000/socket.io/socket.io.js"></script>
+  <style type="text/css">
+    body {
+      font-family: sans-serif;
+    }
+  
+      .main {
+      border: 1px solid black;
+      box-shadow: 10px 10px 5px #888;
+      border-radius: 12px;
+      padding: 20px;
+      background-color: #ddd;
+      margin: 25px;
+      width: 450px;
+      margin-left:auto;
+      margin-right:auto;  
+    }
+    
+    .logo {
+      width:275px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      padding: 15px;
+    }
+    
+    .container {
+      -webkit-perspective: 300; perspective: 300;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="container" style="-webkit-perspective: 300; perspective: 300;">
+    <img src="logo.jpg" id="imgLogo" class="logo">
+  </div>
+  
+  <script type="text/javascript">
+    var socket = io.connect('http://192.168.1.249:3000');
+    init();
+    function init() {
+      socket.on('showData', function (data) {
+        console.log(data);
+        deviceOrientationHandler(data.gamma,data.beta,data.alpha);
+      });
+    }
+  
+    function deviceOrientationHandler(gamma, beta, alpha) {
+      gamma = Math.round(gamma);
+      beta = Math.round(beta);
+      alpha = Math.round(alpha);
+      var logo = document.getElementById("imgLogo");
+      logo.style.webkitTransform = "rotate("+ gamma +"deg) rotate3d(1,0,0, "+ (beta*-1)+"deg)";
+      logo.style.MozTransform = "rotate("+ gamma +"deg)";
+      logo.style.transform = "rotate("+ gamma +"deg) rotate3d(1,0,0, "+ (beta*-1)+"deg)";
+    }
+  </script>
+</body>
+</html>

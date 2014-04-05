@@ -1,0 +1,92 @@
+
+<!doctype html>
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <title>Websocket Gyroscope</title>
+    <script src="http://192.168.1.249:3000/socket.io/socket.io.js"></script>
+  <style type="text/css">
+    body {
+      font-family: sans-serif;
+    }
+  
+      .main {
+      border: 1px solid black;
+      box-shadow: 10px 10px 5px #888;
+      border-radius: 12px;
+      padding: 20px;
+      background-color: #ddd;
+      margin: 25px;
+      width: 450px;
+      margin-left:auto;
+      margin-right:auto;  
+    }
+    
+    .logo {
+      width:275px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      padding: 15px;
+    }
+    
+    .container {
+      -webkit-perspective: 300; perspective: 300;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="main">
+      <h2>Device Orientation</h2>
+      <table>
+        <tr>
+          <td>Event Supported</td>
+          <td id="doEvent"></td>
+        </tr>
+        <tr>
+          <td>Tilt Left/Right [gamma]</td>
+          <td id="gammaS"></td>
+        </tr>
+        <tr>
+          <td>Tilt Front/Back [beta]</td>
+          <td id="betaS"></td>
+        </tr>
+        <tr>
+          <td>Direction [alpha]</td>
+          <td id="alphaS"></td>
+        </tr>
+      </table>
+  </div>
+  
+  <div class="container" style="-webkit-perspective: 300; perspective: 300;">
+  </div>
+  
+  <script type="text/javascript">
+    var socket = io.connect('http://192.168.1.249:3000');
+    init();
+    function init() {
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', function(eventData) {
+          var gamma = eventData.gamma;
+          
+          var beta = eventData.beta;
+          
+          var alpha = eventData.alpha;
+          
+          deviceOrientationHandler(gamma, beta, alpha);
+          }, false);
+      } else {
+      }
+    }
+  
+    function deviceOrientationHandler(gamma, beta, alpha) {
+      socket.emit('gyroData', { gamma: gamma,beta:beta,alpha:alpha});
+      document.getElementById("gammaS").innerHTML = Math.round(gamma);
+      document.getElementById("betaS").innerHTML = Math.round(beta);
+      document.getElementById("alphaS").innerHTML = Math.round(alpha);
+    }
+  </script>
+</body>
+</html>
